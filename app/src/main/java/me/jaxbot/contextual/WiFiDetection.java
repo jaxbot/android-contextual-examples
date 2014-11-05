@@ -26,9 +26,14 @@ public class WiFiDetection extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
+        setContentView(R.layout.activity_wi_fi_detection);
 
         final WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         registerReceiver(new BroadcastReceiver()
