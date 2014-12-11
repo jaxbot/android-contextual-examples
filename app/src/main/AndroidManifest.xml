@@ -23,6 +23,12 @@
             android:name="me.jaxbot.contextual.WiFiDetection"
             android:label="@string/title_activity_wi_fi_detection" >
         </activity>
+
+        <receiver
+            android:name="me.jaxbot.contextual.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
     </application>
 
 </manifest>

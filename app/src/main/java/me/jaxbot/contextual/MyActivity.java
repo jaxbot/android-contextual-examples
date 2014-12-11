@@ -1,10 +1,14 @@
 package me.jaxbot.contextual;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import java.util.Calendar;
 
 
 public class MyActivity extends Activity {
@@ -28,5 +32,18 @@ public class MyActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent sender = PendingIntent.getBroadcast(this, 2, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis() + 86400 * 1000);
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.MINUTE, 0);
+        long interval = 24 * 60 * 60 * 1000;
+
+        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), interval, sender);
     }
 }
