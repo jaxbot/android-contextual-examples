@@ -30,15 +30,4 @@
         android:layout_alignRight="@+id/button_wifi"
         android:layout_alignEnd="@+id/button_wifi" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bluetooth beacons"
-        android:id="@+id/button_bluetooth"
-        android:layout_below="@+id/button_time"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/button_time"
-        android:layout_alignEnd="@+id/button_time" />
-
 </RelativeLayout>
