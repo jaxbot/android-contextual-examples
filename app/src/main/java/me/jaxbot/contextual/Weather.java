@@ -13,8 +13,13 @@ import org.json.JSONObject;
  * Created by jonathan on 12/10/14.
  */
 public class Weather {
+    final static String TAG = "Weather";
+
     public static boolean chanceOfRain() {
+        // Not a real API call; replace URL with something like Forecast.io
         String data = getHTTPString("https://gist.githubusercontent.com/jaxbot/658b9b815b1d073fedd1/raw/6345bf8ff266633d166dcc9f5b1453a31c27868b/fakeweather.json");
+
+        Log.i("Weather", data);
 
         try {
             JSONObject jObject = new JSONObject(data);
@@ -40,7 +45,7 @@ public class Weather {
 
             return result;
         } catch (Exception e) {
-            System.out.println(e);
+            Log.e(TAG, e.toString());
         }
 
         return "";
