@@ -32,6 +32,12 @@
             android:enabled="true"
             android:exported="true" >
         </receiver>
+
+        <service
+            android:name="me.jaxbot.contextual.LocationService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

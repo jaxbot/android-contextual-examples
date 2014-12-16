@@ -38,29 +38,8 @@ public class MyActivity extends Activity {
         findViewById(R.id.button_location).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final double desiredLatitude = 28.555688;
-                final double desiredLongitude = -81.207649;
-                final double radius = radiusFromMiles(1);
-
-                LocationManager locationManager = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
-
-                LocationListener locationListener = new LocationListener() {
-                    public void onLocationChanged(Location location) {
-                        // Called when a new location is found by the network location provider.
-                        Log.i("Loc", location.getLatitude() + "," + location.getLongitude());
-                        if (location.getLongitude() > desiredLongitude - radius && location.getLongitude() < desiredLongitude + radius) {
-                            if (location.getLatitude() > desiredLatitude - radius && location.getLatitude() < desiredLatitude + radius) {
-                                showNotification("Welcome to coffee shop");
-                            }
-                        }
-                    }
-
-                    public void onStatusChanged(String provider, int status, Bundle extras) {}
-                    public void onProviderEnabled(String provider) {}
-                    public void onProviderDisabled(String provider) {}
-                };
-
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                Intent intent = new Intent(ctx, LocationService.class);
+                startService(intent);
             }
         });
 
@@ -98,23 +77,5 @@ public class MyActivity extends Activity {
             }
         });
 
-    }
-
-    static double radiusFromMiles(float miles)
-    {
-        // be approximate
-        return miles / 69;
-    }
-
-    void showNotification(String text) {
-        NotificationManager mNotificationManager = (NotificationManager)
-                this.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notif = new Notification.Builder(this)
-                .setContentTitle(text)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setVibrate(new long[]{100, 100, 100, 100})
-                .setSmallIcon(R.drawable.ic_launcher)
-                .build();
-        mNotificationManager.notify(1, notif);
     }
 }
