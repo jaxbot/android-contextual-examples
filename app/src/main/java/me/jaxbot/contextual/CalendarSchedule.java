@@ -12,24 +12,21 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-/**
- * Created by jonathan on 12/15/14.
- */
 public class CalendarSchedule {
+    // Majority of the calendar code is adapted from Android documentation:
+    // http://developer.android.com/guide/topics/providers/calendar-provider.html
+
     public static final String[] INSTANCE_PROJECTION = new String[] {
-            CalendarContract.Instances.EVENT_ID,      // 0
-            CalendarContract.Instances.BEGIN,         // 1
-            CalendarContract.Instances.TITLE,          // 2
-            CalendarContract.Instances.END, // 3
+            CalendarContract.Instances.EVENT_ID,  // 0
+            CalendarContract.Instances.BEGIN,     // 1
+            CalendarContract.Instances.TITLE,     // 2
+            CalendarContract.Instances.END,       // 3
             CalendarContract.Events.EVENT_LOCATION
     };
 
     // The indices for the projection array above.
-    private static final int PROJECTION_ID_INDEX = 0;
     private static final int PROJECTION_BEGIN_INDEX = 1;
-    private static final int PROJECTION_TITLE_INDEX = 2;
     private static final int PROJECTION_END_INDEX = 3;
-    private static final int PROJECTION_EVENT_LOCATION = 4;
 
     public static ArrayList<Long> getStartEndTimes(Context ctx) {
         ArrayList<Long> timesList = new ArrayList<Long>();
@@ -50,41 +47,35 @@ public class CalendarSchedule {
         Cursor cur;
         ContentResolver cr = ctx.getContentResolver();
 
-// The ID of the recurring event whose instances you are searching
-// for in the Instances table
+        // The ID of the recurring event whose instances you are searching
+        // for in the Instances table
         String selection = CalendarContract.Instances.EVENT_ID + " != ?";
         String[] selectionArgs = new String[] {"-1"};
 
-// Construct the query with the desired date range.
+        // Construct the query with the desired date range.
         Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
         ContentUris.appendId(builder, startMillis);
         ContentUris.appendId(builder, endMillis);
 
-// Submit the query
+        // Submit the query
         cur =  cr.query(builder.build(),
                 INSTANCE_PROJECTION,
                 selection,
                 selectionArgs,
                 CalendarContract.Events.DTSTART);
 
-        long begin = Long.MAX_VALUE;
         long end = 0;
 
         long previousEnd = 0;
-        long previousBeginning = 0;
         long GAP = 1860 * 1000; // 31 minutes
 
         while (cur.moveToNext()) {
-            String title = null;
-            long beginVal = 0;
-            long endVal = 0;
-            String loc;
+            long beginVal;
+            long endVal;
 
             // Get the field values
             beginVal = cur.getLong(PROJECTION_BEGIN_INDEX);
-            title = cur.getString(PROJECTION_TITLE_INDEX);
             endVal = cur.getLong(PROJECTION_END_INDEX);
-            loc = cur.getString(PROJECTION_EVENT_LOCATION);
 
             if (beginVal > previousEnd + GAP) {
                 timesList.add(beginVal - GAP);
@@ -93,7 +84,6 @@ public class CalendarSchedule {
             }
 
             previousEnd = endVal;
-            previousBeginning = beginVal;
 
             // Get the final end time, since no event will be there to follow
             if (endVal > end)
