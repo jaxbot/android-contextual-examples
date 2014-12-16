@@ -11,8 +11,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WiFi Proximity"
-        android:id="@+id/button_wifi"
+        android:text="Location"
+        android:id="@+id/button_location"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -24,10 +24,20 @@
         android:layout_height="wrap_content"
         android:text="Time"
         android:id="@+id/button_time"
-        android:layout_below="@+id/button_wifi"
+        android:layout_below="@+id/button_location"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/button_wifi"
-        android:layout_alignEnd="@+id/button_wifi" />
+        android:layout_alignRight="@+id/button_location"
+        android:layout_alignEnd="@+id/button_location" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calendar Schedule"
+        android:id="@+id/button_schedule"
+        android:layout_below="@+id/button_time"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/button_time"
+        android:layout_alignEnd="@+id/button_time" />
 </RelativeLayout>

@@ -6,26 +6,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
-import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
  * Created by jonathan on 12/15/14.
  */
 public class CalendarSchedule {
-    // Projection array. Creating indices for this array instead of doing
-    // dynamic lookups improves performance.
-    public static final String[] EVENT_PROJECTION = new String[] {
-            CalendarContract.Calendars._ID,                           // 0
-            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
-    };
-
-    private static final String DEBUG_TAG = "MyActivity";
     public static final String[] INSTANCE_PROJECTION = new String[] {
             CalendarContract.Instances.EVENT_ID,      // 0
             CalendarContract.Instances.BEGIN,         // 1
@@ -41,21 +31,23 @@ public class CalendarSchedule {
     private static final int PROJECTION_END_INDEX = 3;
     private static final int PROJECTION_EVENT_LOCATION = 4;
 
-    public static void updateStartEndTimes(Context ctx) {
-        // Specify the date range you want to search for recurring
-        // event instances
+    public static ArrayList<Long> getStartEndTimes(Context ctx) {
+        ArrayList<Long> timesList = new ArrayList<Long>();
+
+        // Get current day schedule, 12:00 am to 11:59 pm
         Calendar beginTime = Calendar.getInstance();
-        beginTime.setTimeInMillis(System.currentTimeMillis() + 86400 * 1000);
+        beginTime.setTimeInMillis(System.currentTimeMillis());
         beginTime.set(Calendar.HOUR_OF_DAY, 0);
         beginTime.set(Calendar.MINUTE, 0);
         long startMillis = beginTime.getTimeInMillis();
+
         Calendar endTime = Calendar.getInstance();
-        endTime.setTimeInMillis(System.currentTimeMillis() + 86400 * 1000);
+        endTime.setTimeInMillis(System.currentTimeMillis());
         endTime.set(Calendar.HOUR_OF_DAY, 23);
         endTime.set(Calendar.MINUTE, 59);
         long endMillis = endTime.getTimeInMillis();
 
-        Cursor cur = null;
+        Cursor cur;
         ContentResolver cr = ctx.getContentResolver();
 
 // The ID of the recurring event whose instances you are searching
@@ -94,31 +86,25 @@ public class CalendarSchedule {
             endVal = cur.getLong(PROJECTION_END_INDEX);
             loc = cur.getString(PROJECTION_EVENT_LOCATION);
 
-            if (beginVal > previousEnd + GAP && previousEnd != 0) {
-                Log.i(DEBUG_TAG, "Starting AC at " + longToDate(beginVal - GAP));
-                Log.i(DEBUG_TAG, "Starting AC at " + longToDate(previousEnd - GAP));
+            if (beginVal > previousEnd + GAP) {
+                timesList.add(beginVal - GAP);
+                if (previousEnd != 0)
+                    timesList.add(previousEnd);
             }
 
             previousEnd = endVal;
             previousBeginning = beginVal;
 
-            if (beginVal < begin)
-                begin = beginVal;
+            // Get the final end time, since no event will be there to follow
             if (endVal > end)
                 end = endVal;
-
-            // Do something with the values.
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(beginVal);
-            DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-            //Log.i(DEBUG_TAG, "Date: " + formatter.format(calendar.getTime()));
-            Log.i(DEBUG_TAG, "Event:  " + title + " starting at " + longToDate(beginVal) + " and ending " + longToDate(endVal));
-            //Log.i(DEBUG_TAG, "Loc: " + loc);
         }
-        Log.i(DEBUG_TAG, "Final AC of the day: " + longToDate(previousEnd));
+        timesList.add(end);
+
+        return timesList;
     }
 
-    static String longToDate(long lon)
+    public static String longToDate(long lon)
     {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(lon);
